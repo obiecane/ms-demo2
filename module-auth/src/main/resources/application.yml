@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: auth-service
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    url: jdbc:mysql://192.168.0.200:3306/jeecms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/msdemo?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Hongkong
+    username: root
+    password: 123456
+    #    password: jlkj@jeecms9
+    tomcat:
+      max-active: 100
+      max-idle: 100
+      initial-size: 10
+      min-idle: 10
+      default-auto-commit: false
+      validation-query: select 1
+      test-while-idle: true
+
+
+server:
+  port: 8009
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka/
+#feign:
+#  hystrix:
+#    enabled: true
+#
+#tx-lcn:
+#  client:
+#    manager-address: 127.0.0.1:8070
+#  logger:
+#    enabled: true
+#    driver-class-name: ${spring.datasource.driver-class-name}
+#    jdbc-url: ${spring.datasource.url}
+#    username: ${spring.datasource.username}
+#    password: ${spring.datasource.password}
+#
+#
+#logging:
+#  level:
+#    com.codingapi.txlcn: debug
+

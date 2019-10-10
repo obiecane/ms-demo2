@@ -1,0 +1,37 @@
+server:
+  port: 9000
+
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+  application:
+    name: gateway-serv
+#    \u5F00\u542F\u901A\u8FC7\u670D\u52A1\u540D\u8F6C\u53D1, \u5982: http://192.168.0.171:9000/MEMBER-SERVICE/members/1  ->  lb://MEMBER-SERVICE/members/1
+  cloud:
+    gateway:
+      default-filters:
+      discovery:
+        locator:
+          enabled: true
+#      routes:
+#        - id: member-service
+#          uri: lb://MEMBER-SERVICE
+#          predicates:
+#            - path: /members/**
+#          filters:
+#            - JWTAuthFilter
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8000/eureka/
+
+
+#\u8BBE\u7F6E\u65AD\u8DEF\u7531\u7684\u8D85\u65F6\u65F6\u95F4\uFF0C\u6BEB\u79D2
+
+
+

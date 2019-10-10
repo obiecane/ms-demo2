@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ms.member.mapper.MemberMapper">
+
+    <resultMap id="all" type="com.ms.member.entity.Member">
+        <!-- 定义主键 ,非常重要。如果是多个字段,则定义多个id -->
+        <!-- property：主键在pojo中的属性名 -->
+        <!-- column：主键在数据库中的列名 -->
+        <id property="id" column="id" />
+
+        <!-- 定义普通属性 -->
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="salt" column="salt" />
+
+        <!-- 一对多 -->
+        <collection property="roles" javaType="list" ofType="com.ms.role.entity.Role">
+            <!-- 配置主键，是关联Order的唯一标识 -->
+            <id property="id" column="rid" />
+            <result property="name" column="rname" />
+        </collection>
+    </resultMap>
+
+    <select id="mySelect" resultType="com.ms.member.entity.Member">
+        select * from jc_member limit 0, 1
+    </select>
+
+
+    <select id="mySelect2" resultType="com.ms.member.entity.Member">
+        select * from jc_member as m
+        <where>
+            <if test="params.username != null and params.username != ''">
+            <bind name="usernameLike" value="'%' + params.username + '%'"/>
+                and m.username like #{usernameLike}
+            </if>
+            <if test="params.password != null and params.password != ''">
+            <bind name="passwordLike" value="'%' + params.password + '%'"/>
+                and m.password like #{passwordLike}
+            </if>
+            <if test="params.salt != null and params.salt != ''">
+                and m.password = #{params.salt}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="associateSelect" resultMap="all">
+        select m.*, r.id as rid, r.name as rname from jc_member m
+        left join jc_role r on FIND_IN_SET(r.id, m.roles)
+        where m.id = #{id}
+    </select>
+
+
+</mapper>
