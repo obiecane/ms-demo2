@@ -3,7 +3,7 @@ package com.ms.role.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import com.ms.core.kit.BaseController;
 
 /**
@@ -12,9 +12,9 @@ import com.ms.core.kit.BaseController;
  * </p>
  *
  * @author Zhu Kaixiao
- * @since 2019-10-10
+ * @date 2019-10-10
  */
-@Controller
+@RestController
 @RequestMapping("/role/role")
 public class RoleController extends BaseController {
 

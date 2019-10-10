@@ -9,7 +9,7 @@ import com.ms.core.kit.BaseService;
  * </p>
  *
  * @author Zhu Kaixiao
- * @since 2019-10-10
+ * @date 2019-10-10
  */
 public interface IRoleService extends BaseService<Role> {
 

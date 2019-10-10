@@ -1,9 +1,7 @@
 package com.ms.generator;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -19,6 +17,7 @@ import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.google.common.collect.Maps;
 
 /**
  * <p>
@@ -33,10 +32,11 @@ public class MysqlGenerator {
     private static final String MODULE_NAME = "module-member";
     private static final String PARENT_PACKAGE = "com.ms";
     private static final String AUTHOR = "Zhu Kaixiao";
+    private static final Class ID_TYPE = Long.class;
 
 
     private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/msdemo?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=GMT%2B8";
-    private static final String JDBC_DRIVER_NAME = "com.mysql.jdbc.Driver";
+    private static final String JDBC_DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
     private static final String JDBC_USERNAME = "root";
     private static final String JDBC_PASSWORD = "123456";
 
@@ -95,11 +95,19 @@ public class MysqlGenerator {
         mpg.setPackageInfo(pc);
 
 
-
         // 自定义配置
         InjectionConfig cfg = new InjectionConfig() {
             @Override
             public void initMap() {
+                HashMap<String, Object> map = Maps.newHashMap();
+
+                if (!ID_TYPE.getName().startsWith("java.lang")) {
+                    map.put("idImportName", ID_TYPE.getName());
+                }
+
+                map.put("idType", ID_TYPE.getSimpleName());
+                map.put("entityUid", new Random().nextLong());
+                this.setMap(map);
                 // to do nothing
             }
         };
@@ -120,6 +128,7 @@ public class MysqlGenerator {
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
+        strategy.setRestControllerStyle(true);
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setSuperEntityClass("com.ms.core.kit.BaseEntity");

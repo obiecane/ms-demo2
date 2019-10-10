@@ -26,8 +26,15 @@ public interface MemberMapper extends BaseMapper<Member> {
      * @return java.util.List<com.ms.member.entity.Member>
      * @author Zhu Kaixiao
      * @date 2019/10/10 11:55
-     **/
+     */
     List<Member> mySelect2(@Param("params") Map<String, Object> params);
 
+    /**
+     * 一对多关联查询
+     * @param id id
+     * @return
+     * @author Zhu Kaixiao
+     * @date 2019/10/10 11:55
+     */
     Member associateSelect(@Param("id") Long id);
 }

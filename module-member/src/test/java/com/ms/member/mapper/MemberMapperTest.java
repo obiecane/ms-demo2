@@ -54,7 +54,7 @@ public class MemberMapperTest {
     @Test
     public void associateSelect() {
 
-        Member members = mapper.associateSelect(1182109448340652035L);
+        Member members = mapper.associateSelect(12L);
         System.out.println(members);
     }
 

@@ -1,5 +1,7 @@
 package com.ms.member.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ms.core.kit.BaseController;
 import com.ms.core.kit.JcResult;
 import com.ms.member.service.MemberService;
 import io.swagger.annotations.*;
@@ -23,7 +25,7 @@ import com.ms.member.entity.Member;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/members")
-public class MemberController {
+public class MemberController extends BaseController {
 
     private final MemberService memberService;
 
@@ -61,5 +63,13 @@ public class MemberController {
     public JcResult validMember(@PathVariable long id) {
         boolean v = memberService.validMember(id);
         return JcResult.ok("校验成功", v);
+    }
+
+
+    @ApiOperation(value = "校验会员信息")
+    @GetMapping("/pages")
+    public JcResult<IPage<Member>> page(IPage<Member> page) {
+        IPage<Member> page1 = memberService.page(page);
+        return JcResult.okData(page1);
     }
 }

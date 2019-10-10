@@ -314,11 +314,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>**/*.jks</include>
-                    <include>**/*.conf</include>
-                    <include>**/*.properties</include>
-                    <include>**/*.xml</include>
-                    <include>**/*.yml</include>
+                    <include>**/*.*</include>
                 </includes>
             </resource>
             <resource>

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ms.member.mapper.MemberMapper">
 
-    <resultMap id="all" type="com.ms.member.entity.Member">
+    <resultMap id="oneToMany" type="com.ms.member.entity.Member">
         <!-- 定义主键 ,非常重要。如果是多个字段,则定义多个id -->
-        <!-- property：主键在pojo中的属性名 -->
+        <!-- property：主键在entity中的属性名 -->
         <!-- column：主键在数据库中的列名 -->
         <id property="id" column="id" />
 
@@ -44,7 +44,7 @@
     </select>
 
 
-    <select id="associateSelect" resultMap="all">
+    <select id="associateSelect" resultMap="oneToMany">
         select m.*, r.id as rid, r.name as rname from jc_member m
         left join jc_role r on FIND_IN_SET(r.id, m.roles)
         where m.id = #{id}

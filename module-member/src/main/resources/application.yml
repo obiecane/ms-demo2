@@ -44,7 +44,7 @@ logging:
     com.ms: debug
 
 mybatis-plus:
-
+  mapper-locations: classpath*:/com/ms/**/mapper/xml/*.xml
   #实体扫描，多个package用逗号或者分号分隔
   typeAliasesPackage: com.ms.**.entity
   global-config:
@@ -68,4 +68,3 @@ mybatis-plus:
       table-prefix: jc_
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
-  mapper-locations: classpath*:/com/ms/*/mapper/xml/*.xml
