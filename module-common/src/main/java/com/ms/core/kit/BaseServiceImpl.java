@@ -1,7 +1,12 @@
 package com.ms.core.kit;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.util.List;
 
 /**
  * @author Zhu Kaixiao
@@ -13,5 +18,21 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, T>
         implements BaseService<T> {
 
-
+    @Override
+    public IPage<T> page(IPage<T> page) {
+        if (page instanceof PageParam) {
+            List<PageParam.Sort> sorts = ((PageParam<T>) page).getSorts();
+            QueryWrapper<T> queryWrapper = Wrappers.query();
+            for (PageParam.Sort sort : sorts) {
+                if (sort.isAsc()) {
+                    queryWrapper = queryWrapper.orderByAsc(sort.getOrderBy());
+                } else {
+                    queryWrapper = queryWrapper.orderByDesc(sort.getOrderBy());
+                }
+            }
+            return super.page(page, queryWrapper);
+        } else {
+            return super.page(page);
+        }
+    }
 }

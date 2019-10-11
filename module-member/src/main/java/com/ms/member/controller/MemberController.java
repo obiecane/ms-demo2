@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import com.ms.member.entity.Member;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * @author Zhu Kaixiao
@@ -66,9 +67,14 @@ public class MemberController extends BaseController {
     }
 
 
-    @ApiOperation(value = "校验会员信息")
-    @GetMapping("/pages")
-    public JcResult<IPage<Member>> page(IPage<Member> page) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNo", dataType = "integer", paramType = "query", value = "页码, 从1开始计数"),
+            @ApiImplicitParam(name = "pageSize", dataType = "integer", paramType = "query", value = "页面大小"),
+            @ApiImplicitParam(name = "pageSort", dataType = "string", paramType = "query", value = "排序字段, 格式: name desc,createTime asc")
+    })
+    @ApiOperation(value = "分页")
+    @PostMapping("/pages")
+    public JcResult<IPage<Member>> page(@ApiIgnore IPage<Member> page) {
         IPage<Member> page1 = memberService.page(page);
         return JcResult.okData(page1);
     }

@@ -121,21 +121,21 @@ public class SwaggerConfig implements EnvironmentAware {
 
 
 
-    @Bean
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public AlternateTypeRuleConvention pageableConvention(final TypeResolver resolver) {
-        return new AlternateTypeRuleConvention() {
-            @Override
-            public int getOrder() {
-                return Ordered.HIGHEST_PRECEDENCE;
-            }
-
-            @Override
-            public List<AlternateTypeRule> rules() {
-                return Lists.newArrayList(newRule(resolver.resolve(IPage.class), resolver.resolve(Page.class)));
-            }
-        };
-    }
+//    @Bean
+//    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+//    public AlternateTypeRuleConvention pageableConvention(final TypeResolver resolver) {
+//        return new AlternateTypeRuleConvention() {
+//            @Override
+//            public int getOrder() {
+//                return Ordered.HIGHEST_PRECEDENCE;
+//            }
+//
+//            @Override
+//            public List<AlternateTypeRule> rules() {
+//                return Lists.newArrayList(newRule(resolver.resolve(IPage.class), resolver.resolve(Page.class)));
+//            }
+//        };
+//    }
 
     private Type pageableMixin() {
         return new AlternateTypeBuilder()
