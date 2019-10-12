@@ -66,5 +66,5 @@ mybatis-plus:
     db-config:
       # 全局表名前缀
       table-prefix: jc_
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用

@@ -11,8 +11,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.cglib.beans.BeanGenerator;
 import org.springframework.cglib.beans.BeanMap;
 
+import java.beans.FeatureDescriptor;
 import java.beans.PropertyDescriptor;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 
 public class CglibUtils {
@@ -20,48 +23,37 @@ public class CglibUtils {
 
     /**
      * 动态添加类的属性
-     * @param dest
-     * @param addProperties
-     * @return
+     * 通过cglib创建目标类的子类, 并增加指定的字段
+     * 然后会把原对象的属性值和待增加的属性的属性值复制到新的对象中
+     * @param dest 待增强的类对象
+     * @param addProperties 待增加的属性及属性值
+     * @return 增强后的对象
      * @author Zhu Kaixiao
      * @date 2019
      */
     public static Object dynamicField(Object dest, Map<String, ?> addProperties) {
-        PropertyDescriptor[] descriptors = BeanUtil.getPropertyDescriptors(dest.getClass());
-        Map<String, Class> propertyMap = Maps.newHashMapWithExpectedSize(descriptors.length);
-        for(PropertyDescriptor d : descriptors) {
-            if(!"class".equalsIgnoreCase(d.getName())) {
-                propertyMap.put(d.getName(), d.getPropertyType());
-            }
+        Map<String, Class> propertyMap = Maps.newHashMapWithExpectedSize(addProperties.size());
+
+        // 动态创建对象, 增加指定属性
+        for (String key : addProperties.keySet()) {
+            propertyMap.put(key, addProperties.get(key).getClass());
         }
-        // add extra properties
-        addProperties.forEach((k, v) -> propertyMap.put(k, v.getClass()));
-        // new dynamic bean
-        DynamicBean dynamicBean =new DynamicBean(dest.getClass(), propertyMap);
-        // add old value
-        propertyMap.forEach((k, v) -> {
-            try{
-                // filter extra properties
-                if(!addProperties.containsKey(k)) {
-                    dynamicBean.setValue(k, BeanUtil.getProperty(dest, k));
-                }
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        // add extra value
-        addProperties.forEach((k, v) -> {
-            try{
-                dynamicBean.setValue(k, v);
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        DynamicBean dynamicBean = new DynamicBean(dest.getClass(), propertyMap);
+
+        // 把原对象中的属性复制到新对象
+        Arrays.stream(BeanUtil.getPropertyDescriptors(dest.getClass()))
+                .map(FeatureDescriptor::getName)
+                .forEach(
+                        oldFieldName -> dynamicBean.setValue(oldFieldName, BeanUtil.getProperty(dest, oldFieldName))
+                );
+
+        // 把扩展属性复制到新对象
+        addProperties.forEach((k, v) -> dynamicBean.setValue(k, v));
         Object target = dynamicBean.getTarget();
         return target;
     }
 
-    public static class DynamicBean {
+    private static class DynamicBean {
         /**
          * 目标对象
          */
@@ -72,7 +64,7 @@ public class CglibUtils {
          */
         private BeanMap beanMap;
 
-        public DynamicBean(Class superclass, Map<String, Class> propertyMap) {
+        DynamicBean(Class superclass, Map<String, Class> propertyMap) {
             this.target = generateBean(superclass, propertyMap);
             this.beanMap = BeanMap.create(this.target);
         }
@@ -84,7 +76,7 @@ public class CglibUtils {
          * @param property
          * @param value
          */
-        public void setValue(String property, Object value) {
+        void setValue(String property, Object value) {
             beanMap.put(property, value);
         }
 
@@ -94,7 +86,7 @@ public class CglibUtils {
          * @param property
          * @return
          */
-        public Object getValue(String property) {
+        Object getValue(String property) {
             return beanMap.get(property);
         }
 
@@ -103,7 +95,7 @@ public class CglibUtils {
          *
          * @return
          */
-        public Object getTarget() {
+        Object getTarget() {
             return this.target;
         }
 
@@ -123,29 +115,5 @@ public class CglibUtils {
             BeanGenerator.addProperties(generator, propertyMap);
             return generator.create();
         }
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Student {
-
-        @JSONField(serialize = false)
-        private String name;
-        private String email;
-    }
-
-
-    public static void main(String[] args) throws Exception{
-        Student student = Student.builder().name("jack").email("xy123zk@163.com").build();
-        System.out.println(student.toString());
-        Map<String,Object> properties = Maps.newHashMap();
-        properties.put("address","浙江杭州");
-        properties.put("age",26);
-
-        Object target = dynamicField(student, properties);
-        String json = JSONObject.toJSONString(target);
-        System.out.println(json);
     }
 }

@@ -58,7 +58,9 @@ public class PageMethodArgumentResolver implements HandlerMethodArgumentResolver
                 page.setSize(pageSize);
                 page.setSorts(sorts);
                 return page;
-            } catch (Exception ignore) {}
+            } catch (Exception ignore) {
+                ignore.printStackTrace();
+            }
         }
         // 创建IPage实例
         IPage page = new Page(pageNo, pageSize);

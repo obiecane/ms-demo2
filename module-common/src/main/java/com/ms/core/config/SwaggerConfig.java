@@ -70,6 +70,8 @@ public class SwaggerConfig implements EnvironmentAware {
                 .paths(PathSelectors.any())
                 .build()
                 .globalOperationParameters(pars)
+//                .alternateTypeRules(newRule(resolver.resolve(IPage.class), resolver.resolve(Page.class), Ordered.HIGHEST_PRECEDENCE))
+//                .ignoredParameterTypes(IPage.class)
                 .securitySchemes(Collections.singletonList(securityScheme()))
                 .securityContexts(Collections.singletonList(securityContext()));
     }

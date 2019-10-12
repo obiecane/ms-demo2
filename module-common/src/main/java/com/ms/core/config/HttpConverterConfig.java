@@ -51,8 +51,6 @@ public class HttpConverterConfig {
 
     private static class PageSerialNumberFilter implements ValueFilter {
 
-        private static final Map<Class, Class> DYNAMIC_CLASS_MAP = new ConcurrentHashMap<>();
-
         @Override
         public Object process(Object object, String name, Object value) {
             if (object instanceof IPage && "records".equals(name)) {
@@ -60,36 +58,14 @@ public class HttpConverterConfig {
                 List records = page.getRecords();
                 long current = page.getCurrent();
                 long size = page.getSize();
-                String key = "pageSerialNumber";
-                HashMap<String, Long> map = MapUtil.of(key, (current - 1) * size);
+                String snFieldName = "pageSerialNumber";
+                Map<String, Long> map = MapUtil.of(snFieldName, (current - 1) * size);
                 for (int i = 0; i < records.size(); i++) {
-                    Object obj = records.get(i);
-                    map.put(key, map.get(key) + 1);
-                    Object target;
-                    if (DYNAMIC_CLASS_MAP.containsKey(obj.getClass())) {
-                        Class aClass = DYNAMIC_CLASS_MAP.get(obj.getClass());
-                        target = ReflectUtil.newInstance(aClass);
-                        BeanUtil.copyProperties(obj, target);
-                        Field[] declaredFields = target.getClass().getDeclaredFields();
-                        for (Field declaredField : declaredFields) {
-                            if (declaredField.getName().endsWith("pageSerialNumber")) {
-                                declaredField.setAccessible(true);
-                                try {
-                                    declaredField.set(target, map.get(key));
-                                    break;
-                                } catch (IllegalAccessException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        }
-                    } else {
-                        target = CglibUtils.dynamicField(obj, map);
-//                        DYNAMIC_CLASS_MAP.put(obj.getClass(), target.getClass());
-                    }
-
+                    Object originObj = records.get(i);
+                    map.put(snFieldName, map.get(snFieldName) + 1);
+                    Object target = CglibUtils.dynamicField(originObj, map);
                     records.set(i, target);
                 }
-                return records;
             }
 
             return value;
